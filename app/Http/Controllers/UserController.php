@@ -6,8 +6,17 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function __invoke()
+    public function index()
     {
+        return view('users.index', [
+            'title' => 'Pengguna'
+        ]);
+    }
 
+    public function create()
+    {
+        return view('users.create', [
+            'title' => 'Tambah'
+        ]);
     }
 }
