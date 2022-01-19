@@ -15,25 +15,17 @@
                 <thead class="table-dark">
                     <tr>
                         <th>No.</th>
-                        <th>Nama</th>
-                        <th>Email</th>
-                        <th>Role</th>
+                        <th>Nama Role</th>
                         <th><i class="fas fa-cogs"></i></th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($users as $user)
+                    @foreach ($roles as $role)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
-                        <td>{{ $user->name }}</td>
-                        <td>{{ $user->email }}</td>
+                        <td>{{ $role->name }}</td>
                         <td>
-                            @foreach ($user->getRoleNames() as $role)
-                            <button class="btn btn-sm btn-primary">{{ $role }}</button>
-                            @endforeach
-                        </td>
-                        <td>
-                            <button class="btn btn-sm btn-info"><i class="fas fa-eye"></i></button>
+                            <button class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></button>
 
                             <button class="btn btn-sm btn-primary"><i class="fas fa-pencil-alt"></i></button>
                             <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
