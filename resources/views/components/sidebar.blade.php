@@ -5,7 +5,7 @@
         <img src="{{ asset('assets') }}/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-        <a href="{{ route('user') }}" class="d-block">{{ auth()->user()->name }}</a>
+        <a href="{{ route('users.index') }}" class="d-block">{{ auth()->user()->name }}</a>
         </div>
     </div>
 
@@ -23,7 +23,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{ route('item') }}" class="nav-link {{ request()->routeIs('item') ? 'active' : '' }}">
+            <a href="{{ route('items.index') }}" class="nav-link {{ request()->routeIs('item') ? 'active' : '' }}">
             <i class="nav-icon fas fa-shopping-bag"></i>
             <p>
                 Items
@@ -31,7 +31,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{ route('user') }}" class="nav-link {{ request()->routeIs('user') || request()->routeIs('role') ? 'active' : '' }}">
+            <a href="{{ route('users.index') }}" class="nav-link {{ request()->routeIs('users') || request()->routeIs('role') ? 'active' : '' }}">
             <i class="nav-icon fas fa-user"></i>
             <p>
                 Pengguna
@@ -40,15 +40,15 @@
             </a>
             <ul class="nav nav-treeview">
                 <li class="nav-item">
-                    <a href="{{ route('user') }}" class="nav-link {{ request()->routeIs('user') ? 'active' : '' }}">
-                    <i class="nav-icon fas fa-user-tag"></i>
+                    <a href="{{ route('users.index') }}" class="nav-link {{ request()->routeIs('users.index') ? 'active' : '' }}">
+                    <i class="nav-icon fas fa-users"></i>
                     <p>
                         Data Pengguna
                     </p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('role') }}" class="nav-link {{ request()->routeIs('role') ? 'active' : '' }}">
+                    <a href="{{ route('roles.index') }}" class="nav-link {{ request()->routeIs('roles.index') ? 'active' : '' }}">
                     <i class="nav-icon fas fa-user-tag"></i>
                     <p>
                         Role Pengguna

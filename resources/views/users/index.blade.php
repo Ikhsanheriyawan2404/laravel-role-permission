@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="container">
-    <a href="{{ route('user.create') }}" class="btn btn-primary">Tambah <i class="fas fa-plus"></i></a>
+    <a href="{{ route('users.create') }}" class="btn btn-primary">Tambah <i class="fas fa-plus"></i></a>
 
     <div class="card card-primary">
         <div class="card-header">
