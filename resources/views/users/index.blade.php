@@ -20,7 +20,7 @@
 </div>
 <!-- /.content-header -->
 
-<div class="container-fluid mb-3">
+<div class="container-fluid mb-3 d-flex justify-content-end">
     <div class="row">
         <div class="col-12">
             @can('user-create')
@@ -61,14 +61,14 @@
                             @endforeach
                         </td>
                         <td class="text-center">
-                            @can('user-list')<a class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a>@endcan
+                            @can('user-list')<a id="user_details" data-id="{{ $user->id }}" class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a>@endcan
 
                             @can('user-edit')
                             <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-primary"><i class="fas fa-pencil-alt"></i></a>
                             @endcan
 
                             @can('user-delete')
-                            <a id="delete" class="btn btn-sm btn-danger" onclick="confirmAction()"><i class="fas fa-trash"></i></a>
+                            <a class="btn btn-sm btn-danger" onclick="confirmAction()"><i class="fas fa-trash"></i></a>
                             <form id="delete-form" action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-none">
                                 @csrf
                                 @method('DELETE')
@@ -85,18 +85,75 @@
     <!-- /.card -->
 </div>
 
+<div class="modal fade" id="modal-default">
+    <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h4 class="modal-title"></h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body">
+            <ul class="list-group">
+                <li class="list-group-item" id="name"></li>
+                <li class="list-group-item" id="email"></li>
+                <li class="list-group-item" id="address"></li>
+            </ul>
+        </div>
+        <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+    <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
 @endsection
 
 @section('custom-scripts')
 
-    <script>
-        function confirmAction()
-        {
-            let confirmAction = confirm("ya");
-            if (confirmAction) {
-                document.getElementById('delete-form').submit();
+<script>
+    $(document).ready(function () {
+
+        function timeFormatter(dateTime){
+            var date = new Date(dateTime);
+            if (date.getHours()>=12){
+                var hour = parseInt(date.getHours()) - 12;
+                var amPm = "PM";
+            } else {
+                var hour = date.getHours();
+                var amPm = "AM";
             }
+            var time = hour + ":" + date.getMinutes() + " " + amPm;
+            console.log(time);
+            return time;
         }
-    </script>
+
+        $('body').on('click', '#user_details', function () {
+            var user_id = $(this).data('id');
+            $.get("{{ route('users.index') }}" +'/' + user_id, function (data) {
+                $('#modal-default').modal('show');
+                $('.modal-title').html("Data Pengguna : " + data.name);
+                $('#name').html("Nama: " + data.name);
+                $('#email').html("Email: " + data.email);
+                $('#address').html("Alamat: " + data.address);
+                var time = new Date();
+                $('#address').html("Dibuat: " + timeFormatter(data.created_at));
+            })
+        });
+    });
+</script>
+<script>
+    function confirmAction()
+    {
+        let confirmAction = confirm("Apakah yakin ingin menghapus?");
+        if (confirmAction) {
+            document.getElementById('delete-form').submit();
+        }
+    }
+</script>
 
 @endsection

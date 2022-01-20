@@ -24,9 +24,56 @@
         </li>
         <li class="nav-item">
             <a href="{{ route('items.index') }}" class="nav-link {{ request()->routeIs('items.*') ? 'active' : '' }}">
-            <i class="nav-icon fas fa-shopping-bag"></i>
+            <i class="nav-icon fas fa-box"></i>
             <p>
-                Items
+                Barang
+            </p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-money-bill"></i>
+            <p>
+                Penjualan
+                <i class="right fas fa-angle-left"></i>
+            </p>
+            </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    @can('user-list')
+                    <a href="#" class="nav-link">
+                    <i class="nav-icon fas fa-money-bill-wave"></i>
+                    <p>
+                        Pendapatan
+                    </p>
+                    </a>
+                    @endcan
+                </li>
+                <li class="nav-item">
+                    @can('role-list')
+                    <a href="#" class="nav-link">
+                    <i class="nav-icon fas fa-money-bill-wave"></i>
+                    <p>
+                        Pengeluaran
+                    </p>
+                    </a>
+                    @endcan
+                </li>
+            </ul>
+        </li>
+        <li class="nav-item">
+            <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-file-alt"></i>
+            <p>
+                Laporan
+            </p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-user-tie"></i>
+            <p>
+                Pelanggan
             </p>
             </a>
         </li>
