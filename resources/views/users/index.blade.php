@@ -23,9 +23,11 @@
 <div class="container-fluid mb-3">
     <div class="row">
         <div class="col-12">
+            @can('user-create')
             <a href="{{ route('users.create') }}" class="btn btn-sm btn-primary">Tambah</a>
             <a href="{{ route('users.create') }}" class="btn btn-sm btn-primary">Impor</a>
             <a href="{{ route('users.create') }}" class="btn btn-sm btn-primary">Ekspor</a>
+            @endcan
         </div>
     </div>
 </div>
@@ -59,15 +61,19 @@
                             @endforeach
                         </td>
                         <td class="text-center">
-                            <a class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a>
+                            @can('user-list')<a class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a>@endcan
 
+                            @can('user-edit')
                             <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-primary"><i class="fas fa-pencil-alt"></i></a>
+                            @endcan
 
+                            @can('user-delete')
                             <a id="delete" class="btn btn-sm btn-danger" onclick="confirmAction()"><i class="fas fa-trash"></i></a>
                             <form id="delete-form" action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-none">
                                 @csrf
                                 @method('DELETE')
                             </form>
+                            @endcan
                         </td>
                     </tr>
                     @endforeach

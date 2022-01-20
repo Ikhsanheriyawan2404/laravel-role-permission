@@ -15,9 +15,7 @@ Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::middleware('auth')->group(function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-    // Route::middleware('role:user')->get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::resources(['users' => UserController::class]);
     Route::resources(['items' => ItemController::class]);
     Route::resources(['roles' => RoleController::class]);
-    Route::middleware('role:admin')->get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });

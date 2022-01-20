@@ -4,10 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Item;
 use Diglactic\Breadcrumbs\Breadcrumbs;
+use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Hash;
 
 class ItemController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:item-list|item-create|item-edit|item-delete', ['only' => ['index','show']]);
+        $this->middleware('permission:item-create', ['only' => ['create','store']]);
+        $this->middleware('permission:item-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:item-delete', ['only' => ['destroy']]);
+    }
     public function index()
     {
         return view('items.index', [

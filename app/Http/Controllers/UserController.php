@@ -10,6 +10,14 @@ use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:user-list|user-create|user-edit|user-delete', ['only' => ['index','show']]);
+        $this->middleware('permission:user-create', ['only' => ['create','store']]);
+        $this->middleware('permission:user-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:user-delete', ['only' => ['destroy']]);
+    }
+
     public function index()
     {
         return view('users.index', [
@@ -48,7 +56,7 @@ class UserController extends Controller
         ]);
 
         $user->assignRole($request['roles']);
-        return redirect()->route('users')->with('success', 'Pengguna berhasil ditambahkan');
+        return redirect()->route('users.index')->with('success', 'Pengguna berhasil ditambahkan');
     }
 
     public function edit(User $user)

@@ -23,9 +23,11 @@
 <div class="container-fluid mb-3">
     <div class="row">
         <div class="col-12">
-            <a href="{{ route('items.create') }}" class="btn btn-sm btn-primary">Tambah</a>
-            <a href="{{ route('users.create') }}" class="btn btn-sm btn-primary">Impor</a>
-            <a href="{{ route('users.create') }}" class="btn btn-sm btn-primary">Ekspor</a>
+            @can('item-create')
+                <a href="{{ route('items.create') }}" class="btn btn-sm btn-primary">Tambah</a>
+                <a href="{{ route('users.create') }}" class="btn btn-sm btn-primary">Impor</a>
+                <a href="{{ route('users.create') }}" class="btn btn-sm btn-primary">Ekspor</a>
+            @endcan
         </div>
     </div>
 </div>
@@ -58,15 +60,19 @@
                         <td>{{ $item->quantity }}</td>
                         <td>{{ $item->description }}</td>
                         <td class="text-center">
-                            <a class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a>
+                            @can('item-list') <a class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a> @endcan
 
+                            @can('item-edit')
                             <a href="{{ route('items.edit', $item->id) }}" class="btn btn-sm btn-primary"><i class="fas fa-pencil-alt"></i></a>
+                            @endcan
 
+                            @can('item-delete')
                             <a id="delete" class="btn btn-sm btn-danger" onclick="confirmAction()"><i class="fas fa-trash"></i></a>
                             <form id="delete-form" action="{{ route('items.destroy', $item->id) }}" method="POST" class="d-none">
                                 @csrf
                                 @method('DELETE')
                             </form>
+                            @endcan
                         </td>
                     </tr>
                     @endforeach
