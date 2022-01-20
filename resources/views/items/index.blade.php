@@ -1,6 +1,7 @@
 @extends('layouts.app', compact('title'))
 
 @section('content')
+@include('sweetalert::alert')
 
 <!-- Content Header (Page header) -->
 <div class="content-header">
@@ -59,7 +60,7 @@
                         <td>{{ $item->price }}</td>
                         <td>{{ $item->quantity }}</td>
                         <td>{{ $item->description }}</td>
-                        <td class="text-center">
+                        <td class="d-flex justify-content-between">
                             @can('item-list') <a class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a> @endcan
 
                             @can('item-edit')
@@ -67,8 +68,8 @@
                             @endcan
 
                             @can('item-delete')
-                            <a id="delete" class="btn btn-sm btn-danger" onclick="confirmAction()"><i class="fas fa-trash"></i></a>
-                            <form id="delete-form" action="{{ route('items.destroy', $item->id) }}" method="POST" class="d-none">
+                            <form action="{{ route('items.destroy', $item->id) }}" method="POST">
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Apakah yakin ingin menghapus ini?')"><i class="fas fa-trash"></i></button>
                                 @csrf
                                 @method('DELETE')
                             </form>
@@ -84,41 +85,17 @@
     <!-- /.card -->
 </div>
 
-<div class="modal fade" id="modal-default">
-    <div class="modal-dialog">
-    <div class="modal-content">
-        <div class="modal-header">
-        <h4 class="modal-title">Default Modal</h4>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        </div>
-        <div class="modal-body">
-        <p>One fine body&hellip;</p>
-        </div>
-        <div class="modal-footer justify-content-between">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-        </div>
-    </div>
-    <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
-
 @endsection
 
 @section('custom-scripts')
 
-    <script>
-        function confirmAction()
-        {
-            let confirmAction = confirm("ya");
-            if (confirmAction) {
-                document.getElementById('delete-form').submit();
-            }
-        }
-    </script>
+<script>
+
+$(document).ready(function () {
+
+
+});
+
+</script>
 
 @endsection

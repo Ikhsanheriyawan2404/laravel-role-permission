@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
+@include('sweetalert::alert')
+
 <!-- Content Header (Page header) -->
 <div class="content-header">
     <div class="container-fluid">

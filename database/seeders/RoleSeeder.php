@@ -18,5 +18,20 @@ class RoleSeeder extends Seeder
             'name' => 'Superadmin',
             'guard_name' => 'web'
         ]);
+
+        $role->givePermissionTo([
+            'user-list',
+            'user-create',
+            'user-edit',
+            'user-delete',
+            'role-list',
+            'role-create',
+            'role-edit',
+            'role-delete',
+            'item-list',
+            'item-create',
+            'item-edit',
+            'item-delete',
+        ]);
     }
 }

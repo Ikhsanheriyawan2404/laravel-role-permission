@@ -1,6 +1,7 @@
 @extends('layouts.app', compact('title'))
 
 @section('content')
+@include('sweetalert::alert')
 
 <!-- Content Header (Page header) -->
 <div class="content-header">
@@ -50,13 +51,13 @@
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $role->name }}</td>
-                        <td class="text-center">
+                        <td class="d-flex justify-content-between">
                             <a id="role_details" data-id="{{ $role->id }}" class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a>
 
                             <a href="{{ route('roles.edit', $role->id) }}" class="btn btn-sm btn-primary"><i class="fas fa-pencil-alt"></i></a>
 
-                            <a id="delete" class="btn btn-sm btn-danger" onclick="confirmAction()"><i class="fas fa-trash"></i></a>
-                            <form id="delete-form" action="{{ route('roles.destroy', $role->id) }}" method="POST" class="d-none">
+                            <form action="{{ route('roles.destroy', $role->id) }}" method="POST">
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Apakah yakin ingin menghapus ini?')"><i class="fas fa-trash"></i></button>
                                 @csrf
                                 @method('DELETE')
                             </form>
@@ -71,53 +72,5 @@
     <!-- /.card -->
 </div>
 
-<div class="modal fade" id="modal-default">
-    <div class="modal-dialog">
-    <div class="modal-content">
-        <div class="modal-header">
-        <h4 class="modal-title"></h4>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        </div>
-        <div class="modal-body">
-            <ul class="list-group">
-                <li class="list-group-item" id="list"></li>
-            </ul>
-        </div>
-        <div class="modal-footer justify-content-between">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
-    </div>
-    <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
-
 @endsection
 
-@section('custom-scripts')
-    <script>
-        $(document).ready(function () {
-
-            $('body').on('click', '#role_details', function () {
-                var role_id = $(this).data('id');
-                $.get("{{ route('roles.index') }}" +'/' + role_id, function (data) {
-                    $('#modal-default').modal('show');
-                    // $('.modal-title').html("Data Role : " + data.role.name);
-                    console.log(data)
-                    // $('#list').html(data.permission.name);
-                })
-            });
-        });
-    </script>
-    <script>
-        function confirmAction()
-        {
-            let confirmAction = confirm("Apakah yakin ingin menghapus?");
-            if (confirmAction) {
-                document.getElementById('delete-form').submit();
-            }
-        }
-    </script>
-@endsection

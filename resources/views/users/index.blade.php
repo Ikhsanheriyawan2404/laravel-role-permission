@@ -1,6 +1,7 @@
 @extends('layouts.app', compact('title'))
 
 @section('content')
+@include('sweetalert::alert')
 
 <!-- Content Header (Page header) -->
 <div class="content-header">
@@ -60,7 +61,7 @@
                             <button class="btn btn-sm btn-primary">{{ $role }}</button>
                             @endforeach
                         </td>
-                        <td class="text-center">
+                        <td class="d-flex justify-content-between">
                             @can('user-list')<a id="user_details" data-id="{{ $user->id }}" class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a>@endcan
 
                             @can('user-edit')
@@ -68,8 +69,8 @@
                             @endcan
 
                             @can('user-delete')
-                            <a class="btn btn-sm btn-danger" onclick="confirmAction()"><i class="fas fa-trash"></i></a>
-                            <form id="delete-form" action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-none">
+                            <form action="{{ route('users.destroy', $user->id) }}" method="POST">
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Apakah yakin ingin menghapus ini?')"><i class="fas fa-trash"></i></button>
                                 @csrf
                                 @method('DELETE')
                             </form>

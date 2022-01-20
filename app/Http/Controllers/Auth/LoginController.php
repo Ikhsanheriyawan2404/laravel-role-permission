@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class LoginController extends Controller
 {
@@ -19,7 +20,6 @@ class LoginController extends Controller
     | to conveniently provide its functionality to your applications.
     |
     */
-
     use AuthenticatesUsers;
 
     /**
@@ -42,8 +42,10 @@ class LoginController extends Controller
     protected function authenticated(Request $request, $user)
     {
         if ($user->hasRole('Superadmin') || $user->hasRole('Admin') ) {
+            Alert::success('Selamat', 'Kamu berhasil login');
             return redirect()->route('users.index');
         }
+        Alert::success('Selamat', 'Kamu berhasil login');
         return redirect()->route('home');
     }
 

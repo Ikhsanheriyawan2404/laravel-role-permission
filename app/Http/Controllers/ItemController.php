@@ -6,6 +6,7 @@ use App\Models\Item;
 use Diglactic\Breadcrumbs\Breadcrumbs;
 use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Hash;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class ItemController extends Controller
 {
@@ -45,8 +46,8 @@ class ItemController extends Controller
             'quantity' => request('quantity'),
             'description' => request('description'),
         ]);
-
-        return redirect()->route('items.index')->with('success', 'Pengguna berhasil ditambahkan');
+        toast('Data barang berhasil ditambah!','success');
+        return redirect()->route('items.index');
     }
 
     public function edit(Item $item)
@@ -71,12 +72,14 @@ class ItemController extends Controller
             'quantity' => request('quantity'),
             'description' => request('description'),
         ]);
-        return redirect()->route('items.index')->with('success', 'Data user was deleted!');
+        toast('Data barang berhasil diubah!','success');
+        return redirect()->route('items.index');
     }
 
     public function destroy(Item $item)
     {
         $item->delete();
-        return back()->with('success', 'Barang berhasil dihapus');
+        toast('Data barang berhasil dihapus!','success');
+        return back();
     }
 }

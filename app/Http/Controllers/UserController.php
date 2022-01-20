@@ -36,7 +36,6 @@ class UserController extends Controller
     {
         $roles = Role::all();
 
-        // dd($roles);
         return view('users.create', [
             'title' => 'Tambah',
             'roles' => $roles,
@@ -61,7 +60,8 @@ class UserController extends Controller
         ]);
 
         $user->assignRole($request['roles']);
-        return redirect()->route('users.index')->with('success', 'Pengguna berhasil ditambahkan');
+        toast('Data pelanggan berhasil dibuat!','success');
+        return redirect()->route('users.index');
     }
 
     public function edit(User $user)
@@ -88,12 +88,14 @@ class UserController extends Controller
         ]);
         DB::table('model_has_roles')->where('model_id', $user->id)->delete();
         $user->assignRole(request('roles'));
-        return redirect()->route('users.index')->with('success', 'Pengguna berhasil ditambahkan');
+        toast('Data pelanggan berhasil diubah!','success');
+        return redirect()->route('users.index');
     }
 
     public function destroy(User $user)
     {
         $user->delete();
+        toast('Data barang berhasil dihapus!','success');
         return back()->with('succes', 'Pengguna berhasil dihapus');
     }
 

@@ -108,6 +108,16 @@
                     </a>
                     @endcan
                 </li>
+                <li class="nav-item">
+                    @can('role-list')
+                    <a href="{{ route('roles.index') }}" class="nav-link {{ request()->routeIs('roles.index') ? 'active' : '' }}">
+                    <i class="nav-icon fas fa-user-tag"></i>
+                    <p>
+                        Izin Pengguna
+                    </p>
+                    </a>
+                    @endcan
+                </li>
             </ul>
         </li>
         <li class="nav-item">
