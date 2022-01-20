@@ -15,7 +15,7 @@
         <!-- Add icons to the links using the .nav-icon class
                 with font-awesome or any other icon font library -->
         <li class="nav-item menu-open">
-            <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+            <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">
             <i class="nav-icon fas fa-tachometer-alt"></i>
             <p>
                 Dashboard
@@ -23,7 +23,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{ route('items.index') }}" class="nav-link {{ request()->routeIs('item') ? 'active' : '' }}">
+            <a href="{{ route('items.index') }}" class="nav-link {{ request()->routeIs('items.*') ? 'active' : '' }}">
             <i class="nav-icon fas fa-shopping-bag"></i>
             <p>
                 Items
@@ -31,7 +31,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{ route('users.index') }}" class="nav-link {{ request()->routeIs('users') || request()->routeIs('role') ? 'active' : '' }}">
+            <a href="{{ route('users.index') }}" class="nav-link {{ request()->routeIs('users.*') || request()->routeIs('roles.*') ? 'active' : '' }}">
             <i class="nav-icon fas fa-user"></i>
             <p>
                 Pengguna

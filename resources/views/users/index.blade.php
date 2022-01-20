@@ -2,9 +2,35 @@
 
 @section('content')
 
-<div class="container">
-    <a href="{{ route('users.create') }}" class="btn btn-primary">Tambah <i class="fas fa-plus"></i></a>
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+    <div class="row mb-2">
+        <div class="col-sm-6">
+        <h1 class="m-0">{{ $title ?? '' }}</h1>
+        </div><!-- /.col -->
+        <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            {{-- <li class="breadcrumb-item"><a href="#">{{ Breadcrumbs::render('home') }}</a></li> --}}
+            <li class="breadcrumb-item active">{{ Breadcrumbs::render('users') }}</li>
+        </ol>
+        </div><!-- /.col -->
+    </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
 
+<div class="container-fluid mb-3">
+    <div class="row">
+        <div class="col-12">
+            <a href="{{ route('users.create') }}" class="btn btn-sm btn-primary">Tambah</a>
+            <a href="{{ route('users.create') }}" class="btn btn-sm btn-primary">Impor</a>
+            <a href="{{ route('users.create') }}" class="btn btn-sm btn-primary">Ekspor</a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
     <div class="card card-primary">
         <div class="card-header">
             <h3 class="card-title">DataTable with default features</h3>
@@ -14,11 +40,11 @@
             <table id="example1" class="table table-bordered table-striped">
                 <thead class="table-dark">
                     <tr>
-                        <th>No.</th>
+                        <th style="width: 1%">No.</th>
                         <th>Nama</th>
                         <th>Email</th>
                         <th>Role</th>
-                        <th><i class="fas fa-cogs"></i></th>
+                        <th class="text-center" style="width: 15%"><i class="fas fa-cogs"></i></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -32,11 +58,16 @@
                             <button class="btn btn-sm btn-primary">{{ $role }}</button>
                             @endforeach
                         </td>
-                        <td>
-                            <button class="btn btn-sm btn-info"><i class="fas fa-eye"></i></button>
+                        <td class="text-center">
+                            <a class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a>
 
-                            <button class="btn btn-sm btn-primary"><i class="fas fa-pencil-alt"></i></button>
-                            <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                            <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-primary"><i class="fas fa-pencil-alt"></i></a>
+
+                            <a id="delete" class="btn btn-sm btn-danger" onclick="confirmAction()"><i class="fas fa-trash"></i></a>
+                            <form id="delete-form" action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-none">
+                                @csrf
+                                @method('DELETE')
+                            </form>
                         </td>
                     </tr>
                     @endforeach
@@ -50,43 +81,16 @@
 
 @endsection
 
-@section('custom-styles')
-    <!-- DataTables -->
-    <link rel="stylesheet" href="{{ asset('assets') }}/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
-    <link rel="stylesheet" href="{{ asset('assets') }}/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
-    <link rel="stylesheet" href="{{ asset('assets') }}/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
-@endsection
-
 @section('custom-scripts')
-    <!-- DataTables  & Plugins -->
-    <script src="../../plugins/datatables/jquery.dataTables.min.js"></script>
-    <script src="../../plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-    <script src="../../plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-    <script src="../../plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-    <script src="../../plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-    <script src="../../plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
-    <script src="../../plugins/jszip/jszip.min.js"></script>
-    <script src="../../plugins/pdfmake/pdfmake.min.js"></script>
-    <script src="../../plugins/pdfmake/vfs_fonts.js"></script>
-    <script src="../../plugins/datatables-buttons/js/buttons.html5.min.js"></script>
-    <script src="../../plugins/datatables-buttons/js/buttons.print.min.js"></script>
-    <script src="../../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 
     <script>
-    $(function () {
-        $("#example1").DataTable({
-        "responsive": true, "lengthChange": false, "autoWidth": false,
-        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-        $('#example2').DataTable({
-        "paging": true,
-        "lengthChange": false,
-        "searching": false,
-        "ordering": true,
-        "info": true,
-        "autoWidth": false,
-        "responsive": true,
-        });
-    });
+        function confirmAction()
+        {
+            let confirmAction = confirm("ya");
+            if (confirmAction) {
+                document.getElementById('delete-form').submit();
+            }
+        }
     </script>
+
 @endsection

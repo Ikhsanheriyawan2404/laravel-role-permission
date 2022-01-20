@@ -39,13 +39,13 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-    protected function authenticated(Request $request, $user)
-    {
-        if ($user->hasRole('admin')) {
-            return redirect()->route('dashboard');
-        }
-        return redirect()->route('home');
-    }
+    // protected function authenticated(Request $request, $user)
+    // {
+    //     if ($user->hasRole('admin')) {
+    //         return redirect()->route('dashboard');
+    //     }
+    //     return redirect()->route('home');
+    // }
 
     public function showLoginForm()
     {

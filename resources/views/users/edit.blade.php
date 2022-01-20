@@ -1,7 +1,6 @@
 @extends('layouts.app', compact('title'))
 
 @section('content')
-
 <!-- Content Header (Page header) -->
 <div class="content-header">
     <div class="container-fluid">
@@ -12,7 +11,7 @@
         <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
             {{-- <li class="breadcrumb-item"><a href="#">{{ Breadcrumbs::render('home') }}</a></li> --}}
-            <li class="breadcrumb-item active">{{ Breadcrumbs::render('edit_item', $item) }}</li>
+            <li class="breadcrumb-item active">{{ Breadcrumbs::render('edit_user', $user) }}</li>
         </ol>
         </div><!-- /.col -->
     </div><!-- /.row -->
@@ -24,19 +23,19 @@
 <!-- general form elements -->
     <div class="card card-primary">
         <div class="card-header">
-        <h3 class="card-title">Edit Barang</h3>
+        <h3 class="card-title">Edit Pengguna {{ $user->name }}</h3>
         </div>
         <!-- /.card-header -->
         <!-- form start -->
-        <form action="{{ route('items.update', $item->id) }}" method="POST">
-            @method('PUT')
+        <form action="{{ route('users.update', $user->id) }}" method="POST">
             @csrf
+            @method('PUT')
             <div class="card-body">
                 <div class="row">
                     <div class="col-lg-6">
                         <div class="form-group">
-                            <label for="name">Nama barang</label>
-                            <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" placeholder="Masukan nama barang" value="{{ $item->name ?? old('name') }}">
+                            <label for="name">Nama lengkap</label>
+                            <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" placeholder="Masukan nama" value="{{ $user->name ?? old('name') }}">
                             @error('name')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -44,29 +43,33 @@
                             @enderror
                         </div>
                         <div class="form-group">
-                            <label for="price">Harga</label>
-                            <input type="number" name="price" class="form-control @error('price') is-invalid @enderror" placeholder="" value="{{ $item->price ?? old('price') }}">
-                            @error('price')
+                            <label for="email">Alamat email</label>
+                            <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" placeholder="cth: user@mail.test" value="{{ $user->email ?? old('email') }}">
+                            @error('email')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
                             @enderror
                         </div>
                         <div class="form-group">
-                            <label for="description">Deskripsi</label>
-                            <textarea name="description" class="form-control @error('description') is-invalid @enderror">{{ $item->description ?? old('description') }}</textarea>
-                            @error('description')
+                            <label for="address">Alamat tempat tinggal</label>
+                            <textarea name="address" class="form-control @error('address') is-invalid @enderror">{{ $user->address ?? old('address') }}</textarea>
+                            @error('address')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
                             @enderror
                         </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-16">
                         <div class="form-group">
-                            <label for="quantity">Kuantitas</label>
-                            <input type="number" name="quantity" class="form-control @error('quantity') is-invalid @enderror" placeholder="" value="{{ $item->quantity ?? old('quantity') }}">
-                            @error('quantity')
+                            <label>Role</label>
+                            <select name="roles[]" class="form-control select2 @error('roles') is-invalid @enderror" style="width: 100%;">
+                                @foreach ($roles as $role)
+                                    <option value="{{ $role->id }}" {{ $role->name == $user->roles->first()->name ? 'selected' : '' }}>{{ $role->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('roles')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -85,4 +88,19 @@
 <!-- /.card -->
 </div>
 
+@endsection
+
+@section('custom-styles')
+    <!-- Select2 -->
+    <link rel="stylesheet" href="{{ asset('assets') }}/plugins/select2/css/select2.min.css">
+@endsection
+
+@section('custom-scripts')
+    <!-- Select2 -->
+    <script src="{{ asset('assets') }}/plugins/select2/js/select2.full.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.select2').select2();
+        });
+    </script>
 @endsection

@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -18,15 +18,6 @@ class UserController extends Controller
             'title' => 'Pengguna'
         ]);
     }
-
-    // protected function validator(array $data)
-    // {
-    //     return Validator::make($data, [
-    //         'name' => ['required', 'string', 'max:255'],
-    //         'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-    //         'password' => ['required', 'string', 'min:8', 'confirmed'],
-    //     ]);
-    // }
 
     public function create()
     {
@@ -59,4 +50,38 @@ class UserController extends Controller
         $user->assignRole($request['roles']);
         return redirect()->route('users')->with('success', 'Pengguna berhasil ditambahkan');
     }
+
+    public function edit(User $user)
+    {
+        return view('users.edit',[
+            'title' => 'Edit Pengguna',
+            'user' => $user,
+            'roles' => Role::all()
+        ]);
+    }
+
+    public function update(User $user)
+    {
+        request()->validate([
+            'name' => 'required|max:255',
+            'email' => 'required',
+            'roles' => 'required'
+        ]);
+
+        $user->update([
+            'name' => request('name'),
+            'email' => request('email'),
+            'address' => request('address'),
+        ]);
+        DB::table('model_has_roles')->where('model_id', $user->id)->delete();
+        $user->assignRole(request('roles'));
+        return redirect()->route('users.index')->with('success', 'Pengguna berhasil ditambahkan');
+    }
+
+    public function destroy(User $user)
+    {
+        $user->delete();
+        return back()->with('succes', 'Pengguna berhasil dihapus');
+    }
+
 }

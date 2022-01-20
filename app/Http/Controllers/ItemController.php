@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Item;
+use Diglactic\Breadcrumbs\Breadcrumbs;
 use Illuminate\Support\Facades\Hash;
 
 class ItemController extends Controller
