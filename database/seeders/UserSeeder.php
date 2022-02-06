@@ -17,7 +17,8 @@ class UserSeeder extends Seeder
         $superadmin = User::create([
             'name' => 'Super Admin',
             'email' => 'superadmin@role.test',
-            'password' => bcrypt('ikhsan123'),
+            'password' => bcrypt('admin'),
+            'is_active' => '1',
         ]);
 
         $superadmin->assignRole('Superadmin');
