@@ -47,6 +47,7 @@
                         <th>Nama</th>
                         <th>Email</th>
                         <th>Role</th>
+                        <th>Aktif</th>
                         <th class="text-center" style="width: 15%"><i class="fas fa-cogs"></i></th>
                     </tr>
                 </thead>
@@ -60,6 +61,13 @@
                             @foreach ($user->getRoleNames() as $role)
                             <button class="btn btn-sm btn-primary">{{ $role }}</button>
                             @endforeach
+                        </td>
+                        <td>
+                            @if ($user->is_active == '1')
+                            <button class="btn btn-sm btn-success"><i class="fa fa-check-circle"></i></button>
+                            @else
+                            <button class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button>
+                            @endif
                         </td>
                         <td class="d-flex justify-content-between">
                             @can('user-list')<a id="user_details" data-id="{{ $user->id }}" class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a>@endcan
