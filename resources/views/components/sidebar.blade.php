@@ -31,53 +31,6 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-money-bill"></i>
-            <p>
-                Penjualan
-                <i class="right fas fa-angle-left"></i>
-            </p>
-            </a>
-            <ul class="nav nav-treeview">
-                <li class="nav-item">
-                    @can('user-list')
-                    <a href="#" class="nav-link">
-                    <i class="nav-icon fas fa-money-bill-wave"></i>
-                    <p>
-                        Pendapatan
-                    </p>
-                    </a>
-                    @endcan
-                </li>
-                <li class="nav-item">
-                    @can('role-list')
-                    <a href="#" class="nav-link">
-                    <i class="nav-icon fas fa-money-bill-wave"></i>
-                    <p>
-                        Pengeluaran
-                    </p>
-                    </a>
-                    @endcan
-                </li>
-            </ul>
-        </li>
-        <li class="nav-item">
-            <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-file-alt"></i>
-            <p>
-                Laporan
-            </p>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-user-tie"></i>
-            <p>
-                Pelanggan
-            </p>
-            </a>
-        </li>
-        <li class="nav-item">
             @can('user-list')
             <a href="{{ route('users.index') }}" class="nav-link {{ request()->routeIs('users.*') || request()->routeIs('roles.*') ? 'active' : '' }}">
             <i class="nav-icon fas fa-user"></i>
@@ -104,16 +57,6 @@
                     <i class="nav-icon fas fa-user-tag"></i>
                     <p>
                         Role Pengguna
-                    </p>
-                    </a>
-                    @endcan
-                </li>
-                <li class="nav-item">
-                    @can('role-list')
-                    <a href="{{ route('roles.index') }}" class="nav-link {{ request()->routeIs('roles.index') ? 'active' : '' }}">
-                    <i class="nav-icon fas fa-user-tag"></i>
-                    <p>
-                        Izin Pengguna
                     </p>
                     </a>
                     @endcan
