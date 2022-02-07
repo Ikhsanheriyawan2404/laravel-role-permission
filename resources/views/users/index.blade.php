@@ -63,12 +63,11 @@
                             @endforeach
                         </td>
                         <td>
-                            <div class="form-group">
-                                <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
-                                    <input type="checkbox" class="custom-control-input" id="customSwitch3">
-                                    <label class="custom-control-label" for="customSwitch3">Aktif / Tidak aktif</label>
-                                </div>
-                            </div>
+                            @if ($user->is_active == '1')
+                                <button class="btn btn-sm btn-success"><i class="fa fa-check-circle"></i></button>
+                            @else
+                                <button class="btn btn-sm btn-danger"><i class="fa fa-times-circle"></i></button>
+                            @endif
                         </td>
                         <td class="d-flex justify-content-between">
                             @can('user-list')<a id="user_details" data-id="{{ $user->id }}" class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a>@endcan
@@ -141,6 +140,17 @@
             console.log(time);
             return time;
         }
+
+        $('.is_active').change(function (e) {
+            e.preventDefault();
+            alert('y');
+            console.log('y');
+        });
+        // $(function () {
+        //     $('input .is_active').on('click', function (e) {
+        //         alert('y');
+        //     });
+        // });
 
         $('body').on('click', '#user_details', function () {
             var user_id = $(this).data('id');

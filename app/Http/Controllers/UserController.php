@@ -78,14 +78,17 @@ class UserController extends Controller
         request()->validate([
             'name' => 'required|max:255',
             'email' => 'required',
-            'roles' => 'required'
+            'roles' => 'required',
+            'is_active' => 'required',
         ]);
 
         $user->update([
             'name' => request('name'),
             'email' => request('email'),
             'address' => request('address'),
+            'is_active' => request('is_active'),
         ]);
+
         DB::table('model_has_roles')->where('model_id', $user->id)->delete();
         $user->assignRole(request('roles'));
         toast('Data pelanggan berhasil diubah!','success');

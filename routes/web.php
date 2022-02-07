@@ -7,9 +7,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 
-
-Auth::routes();
-
 // Login Routes ...
 Route::get('', [LoginController::class, 'showLoginForm']);
 Route::post('login', [LoginController::class,'login'])->name('login');
