@@ -41,10 +41,10 @@ class LoginController extends Controller
 
     protected function authenticated(Request $request, $user)
     {
-        if ($user->hasRole('Superadmin') || $user->hasRole('Admin') ) {
-            Alert::success('Selamat', 'Kamu berhasil login');
-            return redirect()->route('users.index');
-        }
+        // if ($user->hasRole('Superadmin') || $user->hasRole('Admin') ) {
+        //     Alert::success('Selamat', 'Kamu berhasil login');
+        //     return redirect()->route('users.index');
+        // }
         Alert::success('Selamat', 'Kamu berhasil login');
         return redirect()->route('home');
     }
