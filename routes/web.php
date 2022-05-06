@@ -13,12 +13,13 @@ Route::post('login', [LoginController::class,'login'])->name('login');
 Route::post('logout',  [LoginController::class,'logout'])->name('logout');
 
 // Registration Routes...
-Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-Route::post('register', [RegisterController::class, 'register']);
+// Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+// Route::post('register', [RegisterController::class, 'register']);
 
 Route::middleware('auth')->group(function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::resources(['users' => UserController::class]);
+    Route::post('users/{user:id}/status', [UserController::class, 'changeStatus'])->name('users.status');
     Route::resources(['items' => ItemController::class]);
     Route::resources(['roles' => RoleController::class]);
 });

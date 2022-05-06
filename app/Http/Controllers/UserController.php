@@ -60,7 +60,7 @@ class UserController extends Controller
         ]);
 
         $user->assignRole($request['roles']);
-        toast('Data pelanggan berhasil dibuat!','success');
+        toast('Data pengguna berhasil dibuat!','success');
         return redirect()->route('users.index');
     }
 
@@ -91,15 +91,25 @@ class UserController extends Controller
 
         DB::table('model_has_roles')->where('model_id', $user->id)->delete();
         $user->assignRole(request('roles'));
-        toast('Data pelanggan berhasil diubah!','success');
+        toast('Data pengguna berhasil diubah!','success');
         return redirect()->route('users.index');
     }
 
     public function destroy(User $user)
     {
         $user->delete();
-        toast('Data barang berhasil dihapus!','success');
+        toast('Pengguna berhasil dihapus!','success');
         return back()->with('succes', 'Pengguna berhasil dihapus');
+    }
+
+    public function changeStatus(User $user)
+    {
+        $user->update([
+            'is_active' => request('is_active'),
+        ]);
+
+        toast('Pengguna berhasil diaktifkan!', 'success');
+        return redirect()->back();
     }
 
 }

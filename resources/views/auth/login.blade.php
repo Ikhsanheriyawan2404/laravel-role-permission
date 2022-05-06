@@ -54,9 +54,7 @@
         </div>
         <div class="row">
           <div class="col-8">
-              <div class="">
-                  <a href="{{ route('register') }}" class="" >Daftar disini</a>
-              </div>
+
           </div>
           <!-- /.col -->
           <div class="col-4">

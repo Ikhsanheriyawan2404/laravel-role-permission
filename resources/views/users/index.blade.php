@@ -63,11 +63,16 @@
                             @endforeach
                         </td>
                         <td>
-                            @if ($user->is_active == '1')
-                                <button class="btn btn-sm btn-success"><i class="fa fa-check-circle"></i></button>
-                            @else
-                                <button class="btn btn-sm btn-danger"><i class="fa fa-times-circle"></i></button>
-                            @endif
+                            <form action="{{ route('users.status', $user->id) }}" method="post">
+                                @csrf
+                                @if ($user->is_active == '1')
+                                    <input type="hidden" name="is_active" value="0">
+                                    <button type="submit" class="btn btn-sm btn-success"><i class="fa fa-check"></i></button>
+                                @elseif ($user->is_active == '0')
+                                    <input type="hidden" name="is_active" value="1">
+                                    <button type="submit" class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button>
+                                @endif
+                            </form>
                         </td>
                         <td class="d-flex justify-content-between">
                             @can('user-list')<a id="user_details" data-id="{{ $user->id }}" class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a>@endcan
