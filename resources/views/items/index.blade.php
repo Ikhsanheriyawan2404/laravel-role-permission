@@ -28,7 +28,7 @@
                 <a href="{{ route('items.create') }}" class="btn btn-sm btn-primary">Tambah</a>
                 <a href="{{ route('users.create') }}" class="btn btn-sm btn-primary">Impor</a>
                 <a href="{{ route('users.create') }}" class="btn btn-sm btn-primary">Ekspor</a>
-                <a href="#" class="btn btn-sm btn-danger" id="deleteAllSelectedRecord">Hapus Data Yang Di Pilih</a>
+                <button class="btn btn-sm btn-danger d-none" id="deleteAllBtn">Hapus Semua</button>
             @endcan
         </div>
     </div>
@@ -45,13 +45,13 @@
             <table id="data-table" class="table table-bordered table-striped">
                 <thead class="table-dark">
                     <tr>
-                        <th><input type="checkbox" id="check_all"></th>
                         <th style="width: 1%">No.</th>
+                        <th><input type="checkbox" name="main_checkbox"><label></label></th>
                         <th>Nama Barang</th>
                         <th>Harga</th>
                         <th>Kuantitas</th>
                         <th>Deskripsi</th>
-                        <th class="text-center" style="width: 15%"><i class="fas fa-cogs"></i></th>
+                        <th class="text-center" style="width: 15%"><i class="fas fa-cogs"></i> </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -71,6 +71,9 @@
     <link rel="stylesheet" href="{{ asset('asset')}}/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="{{ asset('asset')}}/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
     <link rel="stylesheet" href="{{ asset('asset')}}/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+
+    <link rel="stylesheet" href="{{ asset('asset') }}/plugins/sweetalert2/sweetalert2.min.css">
+    <link rel="stylesheet" href="{{ asset('asset') }}/plugins/toastr/toastr.min.css">
 @endsection
 @section('custom-scripts')
 
@@ -79,15 +82,8 @@
     <script src="{{ asset('asset')}}/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
     <script src="{{ asset('asset')}}/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
     <script src="{{ asset('asset')}}/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-    <script src="{{ asset('asset')}}/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-    <script src="{{ asset('asset')}}/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
-    <script src="{{ asset('asset')}}/plugins/jszip/jszip.min.js"></script>
-    <script src="{{ asset('asset')}}/plugins/pdfmake/pdfmake.min.js"></script>
-    <script src="{{ asset('asset')}}/plugins/pdfmake/vfs_fonts.js"></script>
-    <script src="{{ asset('asset')}}/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
-    <script src="{{ asset('asset')}}/plugins/datatables-buttons/js/buttons.print.min.js"></script>
-    <script src="{{ asset('asset')}}/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
-
+    <script src="{{ asset('asset') }}/plugins/sweetalert2/sweetalert2.min.js"></script>
+    <script src="{{ asset('asset') }}/plugins/toastr/toastr.min.js"></script>
     <script>
         $.ajaxSetup({
             headers: {
@@ -104,14 +100,18 @@
 
                 ajax: "{{ route('items.index') }}",
                 columns: [
-                    {data: 'checkbox', name: 'checkbox', orderable: false, searchable: false},
                     {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                    {data: 'checkbox', name: 'checkbox', orderable: false, searchable: false},
                     {data: 'name', name: 'name'},
                     {data: 'price', name: 'price'},
                     {data: 'quantity', name: 'quantity'},
                     {data: 'description', name: 'description'},
                     {data: 'action', name: 'action', orderable: false, searchable: false},
                 ],
+            }).on('draw', function(){
+                $('input[name="checkbox"]').each(function(){this.checked = false;});
+                $('input[name="main_checkbox"]').prop('checked', false);
+                $('button#deleteAllBtn').addClass('d-none');
             });
 
             $('body').on('click', '#showItem', function () {
@@ -127,32 +127,68 @@
                 })
            });
 
-            $('#check_all').click(function () {
-                $('.checkbox').prop('checked', $(this).prop('checked'));
-            })
+            $(document).on('click','input[name="main_checkbox"]', function(){
+                if (this.checked) {
+                    $('input[name="checkbox"]').each(function(){
+                        this.checked = true;
+                    });
+                } else {
+                    $('input[name="checkbox"]').each(function(){
+                        this.checked = false;
+                    });
+                }
+                toggledeleteAllBtn();
+            });
 
-            $('#deleteAllSelectedRecord').click(function (e) {
-                e.preventDefault();
-                var all = [];
+            $(document).on('change','input[name="checkbox"]', function(){
+                if ($('input[name="checkbox"]').length == $('input[name="checkbox"]:checked').length ){
+                   $('input[name="main_checkbox"]').prop('checked', true);
+                } else {
+                    $('input[name="main_checkbox"]').prop('checked', false);
+                }
+                toggledeleteAllBtn();
+            });
 
-                $('input:checkbox[name=checkbox]:checked').each(function () {
-                    all.push($(this).val());
-                })
+            function toggledeleteAllBtn(){
+                if ($('input[name="checkbox"]:checked').length > 0 ){
+                   $('button#deleteAllBtn').text('Hapus ('+$('input[name="checkbox"]:checked').length+')').removeClass('d-none');
+                } else {
+                   $('button#deleteAllBtn').addClass('d-none');
+                }
+            }
 
-                $.ajax({
-                    url: '{{ route('items.deleteSelected') }}',
-                    type: "DELETE",
-                    data: {
-                        _token: $("input[name=_token]").val(),
-                        checkbox: all
-                    },
-                    // success: function (response() {
-                    //     $.each(all, function (key, val) {
-                    //         $()
-                    //     })
-                    // })
-                })
-           })
+            $(document).on('click','button#deleteAllBtn', function(){
+               var checkedItem = [];
+               $('input[name="checkbox"]:checked').each(function(){
+                   checkedItem.push($(this).data('id'));
+               });
+               var url = '{{ route("items.deleteSelected") }}';
+               if(checkedItem.length > 0){
+                    swal.fire({
+                        title:'Apakah yakin?',
+                        html:'Ingin menghapus <b>('+checkedItem.length+')</b> barang',
+                        showCancelButton:true,
+                        showCloseButton:true,
+                        confirmButtonText:'Ya Hapus',
+                        cancelButtonText:'Tidak',
+                        confirmButtonColor:'#556ee6',
+                        cancelButtonColor:'#d33',
+                        width:300,
+                        allowOutsideClick:false
+                    }).then(function(result){
+                        if(result.value){
+                            $.post(url,{id:checkedItem},function(data){
+                                if(data.code == 1){
+                                    // $('#data-table').DataTable().ajax.reload(null, true);
+                                    table.draw();
+                                    toastr.success(data.msg);
+                                }
+                            },'json');
+                        }
+                    })
+               }
+            });
+
         });
     </script>
 

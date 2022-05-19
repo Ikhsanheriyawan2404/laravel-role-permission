@@ -21,8 +21,8 @@ class ItemController extends Controller
             $items = Item::get();
             return DataTables::of($items)
                     ->addIndexColumn()
-                    ->addColumn('checkbox', function (Item $item) {
-                        return '<input type="checkbox" name="checkbox" id="check" class="checkbox" value=" ' . $item->id . ' ">';
+                    ->addColumn('checkbox', function ($row) {
+                        return '<input type="checkbox" name="checkbox" id="check" class="checkbox" data-id="' . $row->id . '">';
                     })
                     ->addColumn('action', function($row){
                         $btn =
@@ -111,10 +111,8 @@ class ItemController extends Controller
 
     public function deleteSelected()
     {
-        $id = request('checkbox');
-        Item::where('id', $id)->delete();
-        toast('Data barang berhasil dihapus!', 'success');
-        return back();
-
+        $id = request('id');
+        Item::whereIn('id', $id)->delete();
+        return response()->json(['code'=> 1, 'msg' => 'Data item berhasil dihapus']);
     }
 }
