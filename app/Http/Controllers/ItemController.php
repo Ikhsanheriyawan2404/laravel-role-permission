@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Item;
-use Diglactic\Breadcrumbs\Breadcrumbs;
-use GuzzleHttp\Middleware;
-use Illuminate\Support\Facades\Hash;
-use RealRashid\SweetAlert\Facades\Alert;
+use Yajra\DataTables\Facades\DataTables;
+
 
 class ItemController extends Controller
 {
@@ -19,9 +17,37 @@ class ItemController extends Controller
     }
     public function index()
     {
-        return view('items.index', [
-            'title' => 'Data Barang',
-            'items' => Item::all(),
+        if (request()->ajax()) {
+            $items = Item::get();
+            return DataTables::of($items)
+                    ->addIndexColumn()
+                    ->addColumn('checkbox', function (Item $item) {
+                        return '<input type="checkbox" name="checkbox" id="check" class="checkbox" value=" ' . $item->id . ' ">';
+                    })
+                    ->addColumn('action', function($row){
+                        $btn =
+                        '<div class="d-flex justify-content-between">
+
+                            <a href="javascript:void(0)" data-id="'.$row->id.'" id="showItem" class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a>
+
+
+                           <a href=" ' . route('items.edit', $row->id) . '" class="btn btn-sm btn-primary"><i class="fas fa-pencil-alt"></i></a>
+
+
+                           <form action=" ' . route('items.destroy', $row->id) . '" method="POST">
+                               <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm(\'Apakah yakin ingin menghapus ini?\')"><i class="fas fa-trash"></i></button>
+                            ' . csrf_field() . '
+                            ' . method_field('DELETE') . '
+                           </form>
+                        </div>';
+
+                        return $btn;
+                    })
+                    ->rawColumns(['checkbox', 'action'])
+                    ->make(true);
+        }
+        return view('items.index',[
+            'title' => 'Data Barang'
         ]);
     }
 
@@ -40,7 +66,7 @@ class ItemController extends Controller
             'quantity' => 'required'
         ]);
 
-        $item = Item::create([
+        Item::create([
             'name' => request('name'),
             'price' => request('price'),
             'quantity' => request('quantity'),
@@ -81,5 +107,14 @@ class ItemController extends Controller
         $item->delete();
         toast('Data barang berhasil dihapus!','success');
         return back();
+    }
+
+    public function deleteSelected()
+    {
+        $id = request('checkbox');
+        Item::where('id', $id)->delete();
+        toast('Data barang berhasil dihapus!', 'success');
+        return back();
+
     }
 }

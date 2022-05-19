@@ -28,6 +28,7 @@
                 <a href="{{ route('items.create') }}" class="btn btn-sm btn-primary">Tambah</a>
                 <a href="{{ route('users.create') }}" class="btn btn-sm btn-primary">Impor</a>
                 <a href="{{ route('users.create') }}" class="btn btn-sm btn-primary">Ekspor</a>
+                <a href="#" class="btn btn-sm btn-danger" id="deleteAllSelectedRecord">Hapus Data Yang Di Pilih</a>
             @endcan
         </div>
     </div>
@@ -41,9 +42,10 @@
         </div>
         <!-- /.card-header -->
         <div class="card-body">
-            <table id="example1" class="table table-bordered table-striped">
+            <table id="data-table" class="table table-bordered table-striped">
                 <thead class="table-dark">
                     <tr>
+                        <th><input type="checkbox" id="check_all"></th>
                         <th style="width: 1%">No.</th>
                         <th>Nama Barang</th>
                         <th>Harga</th>
@@ -53,30 +55,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($items as $item)
-                    <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td>{{ $item->name }}</td>
-                        <td>{{ $item->price }}</td>
-                        <td>{{ $item->quantity }}</td>
-                        <td>{{ $item->description }}</td>
-                        <td class="d-flex justify-content-between">
-                            @can('item-list') <a class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a> @endcan
 
-                            @can('item-edit')
-                            <a href="{{ route('items.edit', $item->id) }}" class="btn btn-sm btn-primary"><i class="fas fa-pencil-alt"></i></a>
-                            @endcan
-
-                            @can('item-delete')
-                            <form action="{{ route('items.destroy', $item->id) }}" method="POST">
-                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Apakah yakin ingin menghapus ini?')"><i class="fas fa-trash"></i></button>
-                                @csrf
-                                @method('DELETE')
-                            </form>
-                            @endcan
-                        </td>
-                    </tr>
-                    @endforeach
                 </tbody>
             </table>
         </div>
@@ -87,15 +66,95 @@
 
 @endsection
 
+@section('custom-styles')
+    <!-- DataTables -->
+    <link rel="stylesheet" href="{{ asset('asset')}}/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="{{ asset('asset')}}/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" href="{{ asset('asset')}}/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+@endsection
 @section('custom-scripts')
 
-<script>
+    <!-- DataTables  & Plugins -->
+    <script src="{{ asset('asset')}}/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="{{ asset('asset')}}/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="{{ asset('asset')}}/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="{{ asset('asset')}}/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="{{ asset('asset')}}/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="{{ asset('asset')}}/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script src="{{ asset('asset')}}/plugins/jszip/jszip.min.js"></script>
+    <script src="{{ asset('asset')}}/plugins/pdfmake/pdfmake.min.js"></script>
+    <script src="{{ asset('asset')}}/plugins/pdfmake/vfs_fonts.js"></script>
+    <script src="{{ asset('asset')}}/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="{{ asset('asset')}}/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="{{ asset('asset')}}/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 
-$(document).ready(function () {
+    <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
 
+        $(function () {
 
-});
+            let table = $('#data-table').DataTable({
+                processing: true,
+                serverSide: true,
+                responsive: true,
 
-</script>
+                ajax: "{{ route('items.index') }}",
+                columns: [
+                    {data: 'checkbox', name: 'checkbox', orderable: false, searchable: false},
+                    {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                    {data: 'name', name: 'name'},
+                    {data: 'price', name: 'price'},
+                    {data: 'quantity', name: 'quantity'},
+                    {data: 'description', name: 'description'},
+                    {data: 'action', name: 'action', orderable: false, searchable: false},
+                ],
+            });
+
+            $('body').on('click', '#showItem', function () {
+                var item_id = $(this).data('id');
+                $.get("{{ route('items.index') }}" +'/' + item_id, function (data) {
+                    $('#modal-lg').modal('show');
+                    $('#modal-title').html("Detail Barang");
+                    $('#item_id').val(data.id);
+                    $('.name').html('Nama : ' + data.name);
+                    $('.price').html('Harga : ' + data.price);
+                    $('.quantity').html('Kuantitas : ' + data.quantity);
+                    $('.description').html('Deskripsi : ' + data.description);
+                })
+           });
+
+            $('#check_all').click(function () {
+                $('.checkbox').prop('checked', $(this).prop('checked'));
+            })
+
+            $('#deleteAllSelectedRecord').click(function (e) {
+                e.preventDefault();
+                var all = [];
+
+                $('input:checkbox[name=checkbox]:checked').each(function () {
+                    all.push($(this).val());
+                })
+
+                $.ajax({
+                    url: '{{ route('items.deleteSelected') }}',
+                    type: "DELETE",
+                    data: {
+                        _token: $("input[name=_token]").val(),
+                        checkbox: all
+                    },
+                    // success: function (response() {
+                    //     $.each(all, function (key, val) {
+                    //         $()
+                    //     })
+                    // })
+                })
+           })
+        });
+    </script>
 
 @endsection
+

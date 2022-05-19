@@ -21,5 +21,7 @@ Route::middleware('auth')->group(function () {
     Route::resources(['users' => UserController::class]);
     Route::post('users/{user:id}/status', [UserController::class, 'changeStatus'])->name('users.status');
     Route::resources(['items' => ItemController::class]);
+    Route::post('items/delete-selected/status', [ItemController::class, 'deleteSelected'])->name('items.deleteSelected');
+
     Route::resources(['roles' => RoleController::class]);
 });
