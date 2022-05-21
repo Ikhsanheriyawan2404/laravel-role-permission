@@ -25,10 +25,8 @@
     <div class="row">
         <div class="col-12">
             @can('item-create')
-                <a href="{{ route('items.create') }}" class="btn btn-sm btn-primary">Tambah</a>
-                <a href="{{ route('users.create') }}" class="btn btn-sm btn-primary">Impor</a>
-                <a href="{{ route('users.create') }}" class="btn btn-sm btn-primary">Ekspor</a>
-                <button class="btn btn-sm btn-danger d-none" id="deleteAllBtn">Hapus Semua</button>
+            <button class="btn btn-sm btn-primary" id="createNewItem">Tambah <i class="fa fa-plus"></i></button>
+            <button class="btn btn-sm btn-danger d-none" id="deleteAllBtn">Hapus Semua</button>
             @endcan
         </div>
     </div>
@@ -65,6 +63,108 @@
 </div>
 
 @endsection
+
+<!-- MODAL -->
+<div class="modal fade" id="modal-lg">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modal-title"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post" id="itemForm" name="itemForm" enctype="multipart/form-data">
+                @csrf
+                <input type="hidden" name="vehicle_id" id="vehicle_id">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="name">Nama Kendaraan</label>
+                        <input type="text" class="form-control mr-2" name="name" id="name" required>
+                    </div>
+                    <label for="length">Panjang</label>
+                    <div class="input-group mb-2">
+                        <input type="number" class="form-control mr-2" name="length" id="length" required>
+                        <div class="input-group-append">
+                            <span class="input-group-text">Cm</span>
+                        </div>
+                    </div>
+                    <label for="width">Lebar</label>
+                    <div class="input-group mb-2">
+                        <input type="number" class="form-control mr-2" name="width" id="width" required>
+                        <div class="input-group-append">
+                            <span class="input-group-text">Cm</span>
+                        </div>
+                    </div>
+                    <label for="height">Tinggi</label>
+                    <div class="input-group mb-2">
+                        <input type="number" class="form-control mr-2" name="height" id="height" required>
+                        <div class="input-group-append">
+                            <span class="input-group-text">Cm</span>
+                        </div>
+                    </div>
+                    <label for="weight">Berat</label>
+                    <div class="input-group mb-2">
+                        <input type="number" class="form-control mr-2" name="weight" id="weight" required>
+                        <div class="input-group-append">
+                            <span class="input-group-text">Ton</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Deskripsi</label>
+                        <textarea type="text" class="form-control mr-2" name="description" id="description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="album_vehicle_id">Album</label>
+                        <select name="album_vehicle_id" id="album_vehicle_id" class="form-control select2" required>
+                            <option selected disabled>Pilih album kendaraan</option>
+                            @foreach ($albums as $album)
+                                <option value="{{ $album->id }}">{{ $album->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="customFile">Gambar <small class="text-danger">Abaikan jika tidak menambahakan gambar</small></label>
+
+                        <div class="custom-file">
+                            <input type="file" name="image" id="image" class="custom-file-input @error('image') is-invalid @enderror" id="customFile">
+                            <label class="custom-file-label" for="customFile">Pilih gambar</label>
+                            @error('image')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    </div>
+                    {{-- <div class="form-group">
+                        <label for="image" class="col-sm-4 label-on-left">Photo :</label>
+                        <div class="col-sm-8 fileinput fileinput-new text-left" data-provides="fileinput">
+                            <div class="fileinput-new thumbnail">
+                                <span id="view_cover"></span>
+                            </div>
+                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                            <div>
+                                <span class="btn btn-round btn-rose btn-file">
+                                    <span class="fileinput-new" id="proses_image"></span>
+                                    <span class="fileinput-exists">Change</span>
+                                    <input type="file" name="image" id="image" accept="image/*" />
+                                </span>
+                                <br />
+                                <a href="#pablo" class="btn btn-danger btn-round fileinput-exists" data-dismiss="fileinput"><i class="fa fa-times"></i> Remove</a>
+                            </div>
+                        </div>
+                    </div> --}}
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" id="saveBtn" value="create">Save</button>
+                </div>
+            </form>
+        </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
 
 @section('custom-styles')
     <!-- DataTables -->
@@ -114,18 +214,61 @@
                 $('button#deleteAllBtn').addClass('d-none');
             });
 
-            $('body').on('click', '#showItem', function () {
+            $('#createNewItem').click(function () {
+                setTimeout(function () {
+                    $('#name').focus();
+                }, 500);
+                $('#saveBtn').removeAttr('disabled');
+                $('#saveBtn').html("Simpan");
+                $('#item_id').val('');
+                $('#itemForm').trigger("reset");
+                $('#modal-title').html("Tambah Album Kendaraan");
+                $('#modal-lg').modal('show');
+                CKclear();
+            });
+
+            $('body').on('click', '#editItem', function () {
                 var item_id = $(this).data('id');
-                $.get("{{ route('items.index') }}" +'/' + item_id, function (data) {
+                $.get("{{ route('items.index') }}" +'/' + item_id +'/edit', function (data) {
                     $('#modal-lg').modal('show');
-                    $('#modal-title').html("Detail Barang");
+                    setTimeout(function () {
+                        $('#name').focus();
+                    }, 500);
+                    $('#modal-title').html("Edit Kendaraan");
+                    $('#saveBtn').removeAttr('disabled');
+                    $('#saveBtn').html("Simpan");
                     $('#item_id').val(data.id);
-                    $('.name').html('Nama : ' + data.name);
-                    $('.price').html('Harga : ' + data.price);
-                    $('.quantity').html('Kuantitas : ' + data.quantity);
-                    $('.description').html('Deskripsi : ' + data.description);
+                    $('#name').val(data.name);
+                    $('#price').val(data.price);
+                    $('#quantity').val(data.quantity);
+                    $('#description').html(data.description);
+                    $('#category_id').val(data.category_id);
                 })
-           });
+            });
+
+            $('#saveBtn').click(function (e) {
+                e.preventDefault();
+                var formData = new FormData($('#itemForm')[0]);
+                $.ajax({
+                    data: formData,
+                    url: "{{ route('items.store') }}",
+                    contentType : false,
+                    processData : false,
+                    type: "POST",
+                    // dataType: 'json',
+                    success: function (data) {
+                        $('#saveBtn').attr('disabled', 'disabled');
+                        $('#saveBtn').html('Simpan ...');
+                        $('#itemForm').trigger("reset");
+                        $('#modal-lg').modal('hide');
+                        table.draw();
+                    },
+                    error: function (data) {
+                        alert("Data masih kosong");
+                        console.log('Error:', data);
+                    }
+                });
+            });
 
             $(document).on('click','input[name="main_checkbox"]', function(){
                 if (this.checked) {
@@ -149,7 +292,7 @@
                 toggledeleteAllBtn();
             });
 
-            function toggledeleteAllBtn(){
+            function toggledeleteAllBtn() {
                 if ($('input[name="checkbox"]:checked').length > 0 ){
                    $('button#deleteAllBtn').text('Hapus ('+$('input[name="checkbox"]:checked').length+')').removeClass('d-none');
                 } else {

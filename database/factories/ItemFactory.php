@@ -18,6 +18,7 @@ class ItemFactory extends Factory
             'price' => $this->faker->randomDigit(),
             'quantity' => $this->faker->randomDigit(),
             'description' => $this->faker->text(),
+            'category_id' => rand(1,3),
         ];
     }
 }

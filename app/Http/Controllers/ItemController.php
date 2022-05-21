@@ -31,10 +31,9 @@ class ItemController extends Controller
                             <a href="javascript:void(0)" data-id="'.$row->id.'" id="showItem" class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a>
 
 
-                           <a href=" ' . route('items.edit', $row->id) . '" class="btn btn-sm btn-primary"><i class="fas fa-pencil-alt"></i></a>
+                            <a href="javascript:void(0)" data-id="'.$row->id.'" class="btn btn-primary btn-sm mr-2" id="editItem"><i class="fas fa-pencil-alt"></i></a>
 
-
-                           <form action=" ' . route('items.destroy', $row->id) . '" method="POST">
+                            <form action=" ' . route('items.destroy', $row->id) . '" method="POST">
                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm(\'Apakah yakin ingin menghapus ini?\')"><i class="fas fa-trash"></i></button>
                             ' . csrf_field() . '
                             ' . method_field('DELETE') . '
@@ -62,44 +61,26 @@ class ItemController extends Controller
     {
         request()->validate([
             'name' => 'required|max:255',
-            'price' => 'required',
-            'quantity' => 'required'
+            'price' => 'max:255',
+            'quantity' => 'max:255',
+            'description' => 'max:255',
+            'category_id' => 'required',
         ]);
 
-        Item::create([
-            'name' => request('name'),
-            'price' => request('price'),
-            'quantity' => request('quantity'),
-            'description' => request('description'),
-        ]);
-        toast('Data barang berhasil ditambah!','success');
-        return redirect()->route('items.index');
+        Item::updateOrCreate(
+            ['id' => request('item_id')],
+            [
+                'name' => request('name'),
+                'price' => request('price'),
+                'quantity' => request('quantity'),
+                'description' => request('description'),
+                'category_id' => request('category_id'),
+            ]);
     }
 
     public function edit(Item $item)
     {
-        return view('items.edit', [
-            'title' => 'Edit Barang',
-            'item' => $item,
-        ]);
-    }
-
-    public function update(Item $item)
-    {
-        request()->validate([
-            'name' => 'required|max:255',
-            'price' => 'required',
-            'quantity' => 'required'
-        ]);
-
-        $item->update([
-            'name' => request('name'),
-            'price' => request('price'),
-            'quantity' => request('quantity'),
-            'description' => request('description'),
-        ]);
-        toast('Data barang berhasil diubah!','success');
-        return redirect()->route('items.index');
+        return response()->json($item);
     }
 
     public function destroy(Item $item)

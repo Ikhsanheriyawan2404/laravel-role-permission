@@ -11,7 +11,7 @@
 
     <!-- Sidebar Menu -->
     <nav class="mt-2">
-        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+        <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent" data-widget="treeview" role="menu" data-accordion="false">
         <!-- Add icons to the links using the .nav-icon class
                 with font-awesome or any other icon font library -->
         <li class="nav-item menu-open">
@@ -27,6 +27,14 @@
             <i class="nav-icon fas fa-box"></i>
             <p>
                 Barang
+            </p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{ route('categories.index') }}" class="nav-link {{ request()->routeIs('categories.*') ? 'active' : '' }}">
+            <i class="nav-icon fas fa-box"></i>
+            <p>
+                Kategori Barang
             </p>
             </a>
         </li>
