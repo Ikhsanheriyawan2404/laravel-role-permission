@@ -36,7 +36,7 @@
     @include('components.alerts')
     <div class="card card-primary">
         <div class="card-header">
-            <h3 class="card-title">DataTable with default features</h3>
+            <h3 class="card-title">Data Barang</h3>
         </div>
         <!-- /.card-header -->
         <div class="card-body">
@@ -48,6 +48,7 @@
                         <th>Nama Barang</th>
                         <th>Harga</th>
                         <th>Kuantitas</th>
+                        <th>Kategori</th>
                         <th>Deskripsi</th>
                         <th class="text-center" style="width: 15%"><i class="fas fa-cogs"></i> </th>
                     </tr>
@@ -62,11 +63,9 @@
     <!-- /.card -->
 </div>
 
-@endsection
-
 <!-- MODAL -->
-<div class="modal fade" id="modal-lg">
-    <div class="modal-dialog modal-lg">
+<div class="modal fade" id="modal-md">
+    <div class="modal-dialog modal-md">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title" id="modal-title"></h4>
@@ -74,86 +73,35 @@
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form method="post" id="itemForm" name="itemForm" enctype="multipart/form-data">
+            <form method="post" id="itemForm" name="itemForm">
                 @csrf
-                <input type="hidden" name="vehicle_id" id="vehicle_id">
+                <input type="hidden" name="item_id" id="item_id">
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="name">Nama Kendaraan</label>
+                        <label for="name">Nama Barang</label>
                         <input type="text" class="form-control mr-2" name="name" id="name" required>
                     </div>
-                    <label for="length">Panjang</label>
-                    <div class="input-group mb-2">
-                        <input type="number" class="form-control mr-2" name="length" id="length" required>
-                        <div class="input-group-append">
-                            <span class="input-group-text">Cm</span>
-                        </div>
+                    <div class="form-group">
+                        <label for="price">Harga</label>
+                        <input type="number" class="form-control mr-2" name="price" id="price" required>
                     </div>
-                    <label for="width">Lebar</label>
-                    <div class="input-group mb-2">
-                        <input type="number" class="form-control mr-2" name="width" id="width" required>
-                        <div class="input-group-append">
-                            <span class="input-group-text">Cm</span>
-                        </div>
-                    </div>
-                    <label for="height">Tinggi</label>
-                    <div class="input-group mb-2">
-                        <input type="number" class="form-control mr-2" name="height" id="height" required>
-                        <div class="input-group-append">
-                            <span class="input-group-text">Cm</span>
-                        </div>
-                    </div>
-                    <label for="weight">Berat</label>
-                    <div class="input-group mb-2">
-                        <input type="number" class="form-control mr-2" name="weight" id="weight" required>
-                        <div class="input-group-append">
-                            <span class="input-group-text">Ton</span>
-                        </div>
+                    <div class="form-group">
+                        <label for="quantity">Kuantitas</label>
+                        <input type="number" class="form-control mr-2" name="quantity" id="quantity" required>
                     </div>
                     <div class="form-group">
                         <label for="description">Deskripsi</label>
                         <textarea type="text" class="form-control mr-2" name="description" id="description"></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="album_vehicle_id">Album</label>
-                        <select name="album_vehicle_id" id="album_vehicle_id" class="form-control select2" required>
-                            <option selected disabled>Pilih album kendaraan</option>
-                            @foreach ($albums as $album)
-                                <option value="{{ $album->id }}">{{ $album->name }}</option>
+                        <label for="category_id">Kategori</label>
+                        <select name="category_id" id="category_id" class="form-control select2" required>
+                            <option selected disabled>Pilih kategori barang</option>
+                            @foreach ($categories as $category)
+                                <option value="{{ $category->id }}">{{ $category->name }}</option>
                             @endforeach
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label for="customFile">Gambar <small class="text-danger">Abaikan jika tidak menambahakan gambar</small></label>
-
-                        <div class="custom-file">
-                            <input type="file" name="image" id="image" class="custom-file-input @error('image') is-invalid @enderror" id="customFile">
-                            <label class="custom-file-label" for="customFile">Pilih gambar</label>
-                            @error('image')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-                    </div>
-                    {{-- <div class="form-group">
-                        <label for="image" class="col-sm-4 label-on-left">Photo :</label>
-                        <div class="col-sm-8 fileinput fileinput-new text-left" data-provides="fileinput">
-                            <div class="fileinput-new thumbnail">
-                                <span id="view_cover"></span>
-                            </div>
-                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
-                            <div>
-                                <span class="btn btn-round btn-rose btn-file">
-                                    <span class="fileinput-new" id="proses_image"></span>
-                                    <span class="fileinput-exists">Change</span>
-                                    <input type="file" name="image" id="image" accept="image/*" />
-                                </span>
-                                <br />
-                                <a href="#pablo" class="btn btn-danger btn-round fileinput-exists" data-dismiss="fileinput"><i class="fa fa-times"></i> Remove</a>
-                            </div>
-                        </div>
-                    </div> --}}
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary" id="saveBtn" value="create">Save</button>
@@ -165,6 +113,8 @@
     <!-- /.modal-dialog -->
 </div>
 <!-- /.modal -->
+
+@endsection
 
 @section('custom-styles')
     <!-- DataTables -->
@@ -205,6 +155,7 @@
                     {data: 'name', name: 'name'},
                     {data: 'price', name: 'price'},
                     {data: 'quantity', name: 'quantity'},
+                    {data: 'category', name: 'category.name'},
                     {data: 'description', name: 'description'},
                     {data: 'action', name: 'action', orderable: false, searchable: false},
                 ],
@@ -223,18 +174,17 @@
                 $('#item_id').val('');
                 $('#itemForm').trigger("reset");
                 $('#modal-title').html("Tambah Album Kendaraan");
-                $('#modal-lg').modal('show');
-                CKclear();
+                $('#modal-md').modal('show');
             });
 
             $('body').on('click', '#editItem', function () {
                 var item_id = $(this).data('id');
                 $.get("{{ route('items.index') }}" +'/' + item_id +'/edit', function (data) {
-                    $('#modal-lg').modal('show');
+                    $('#modal-md').modal('show');
                     setTimeout(function () {
                         $('#name').focus();
                     }, 500);
-                    $('#modal-title').html("Edit Kendaraan");
+                    $('#modal-title').html("Edit Barang");
                     $('#saveBtn').removeAttr('disabled');
                     $('#saveBtn').html("Simpan");
                     $('#item_id').val(data.id);
@@ -260,7 +210,7 @@
                         $('#saveBtn').attr('disabled', 'disabled');
                         $('#saveBtn').html('Simpan ...');
                         $('#itemForm').trigger("reset");
-                        $('#modal-lg').modal('hide');
+                        $('#modal-md').modal('hide');
                         table.draw();
                     },
                     error: function (data) {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Item;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -18,9 +19,12 @@ class ItemController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $items = Item::get();
+            $items = Item::latest()->get();
             return DataTables::of($items)
                     ->addIndexColumn()
+                    ->editColumn('category', function (Item $item) {
+                        return $item->category->name;
+                    })
                     ->addColumn('checkbox', function ($row) {
                         return '<input type="checkbox" name="checkbox" id="check" class="checkbox" data-id="' . $row->id . '">';
                     })
@@ -31,7 +35,7 @@ class ItemController extends Controller
                             <a href="javascript:void(0)" data-id="'.$row->id.'" id="showItem" class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a>
 
 
-                            <a href="javascript:void(0)" data-id="'.$row->id.'" class="btn btn-primary btn-sm mr-2" id="editItem"><i class="fas fa-pencil-alt"></i></a>
+                            <a href="javascript:void(0)" data-id="'.$row->id.'" class="btn btn-primary btn-sm" id="editItem"><i class="fas fa-pencil-alt"></i></a>
 
                             <form action=" ' . route('items.destroy', $row->id) . '" method="POST">
                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm(\'Apakah yakin ingin menghapus ini?\')"><i class="fas fa-trash"></i></button>
@@ -46,14 +50,8 @@ class ItemController extends Controller
                     ->make(true);
         }
         return view('items.index',[
-            'title' => 'Data Barang'
-        ]);
-    }
-
-    public function create()
-    {
-        return view('items.create', [
-            'title' => 'Tambah Barang',
+            'title' => 'Data Barang',
+            'categories' => Category::all()
         ]);
     }
 
@@ -61,8 +59,8 @@ class ItemController extends Controller
     {
         request()->validate([
             'name' => 'required|max:255',
-            'price' => 'max:255',
-            'quantity' => 'max:255',
+            'price' => 'required|max:255',
+            'quantity' => 'required|max:255',
             'description' => 'max:255',
             'category_id' => 'required',
         ]);
