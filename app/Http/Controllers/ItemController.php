@@ -16,6 +16,7 @@ class ItemController extends Controller
         $this->middleware('permission:item-edit', ['only' => ['edit','update']]);
         $this->middleware('permission:item-delete', ['only' => ['destroy']]);
     }
+
     public function index()
     {
         if (request()->ajax()) {
